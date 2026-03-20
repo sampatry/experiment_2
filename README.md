@@ -13,7 +13,7 @@ Make sure the following is being sourced before starting. Copy them into the `~/
 
 To build;
 `rm -rf build/ install/ log/ #(optional for clean build)` #Removes old build
-`cd ~/expirement_1 && colcon build --symlink-install && source ~/.bashrc`
+`cd ~/experiment_2 && colcon build --symlink-install && source ~/.bashrc`
 
 To start turtlebot on rasberrypi run this:
 *this one doenst launch bringup with the manipulator
