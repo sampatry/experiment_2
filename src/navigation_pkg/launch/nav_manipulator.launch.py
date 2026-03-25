@@ -36,32 +36,9 @@ def generate_launch_description():
     keepout_mask_file = os.path.join(
         get_package_share_directory('navigation_pkg'), 'config', 'keepout_mask.yaml'
     )
-    
-    # keepout_launch = os.path.join(
-    #     get_package_share_directory('nav2_bringup'),
-    #     'launch', 'keepout_zone.launch.py'
-    # )
 
     return LaunchDescription([
-        # IncludeLaunchDescription(
-        #     PythonLaunchDescriptionSource(sim_launch)
-        # ),
-        IncludeLaunchDescription(
-            PythonLaunchDescriptionSource(nav2_launch),
-            launch_arguments={
-                'map_yaml_file': map_file,
-                'params_file': param_file,
-                'use_sim': 'true',
-                'start_rviz': 'true',
-            }.items()
-        ),
-        # This starts the /move_action server your Python script is looking for
-        IncludeLaunchDescription(
-            PythonLaunchDescriptionSource(moveit_launch_path),
-            launch_arguments={
-                'use_sim_time': 'true',
-            }.items()
-        ),
+        
         
         Node(
             package='nav2_map_server',
@@ -71,6 +48,8 @@ def generate_launch_description():
             parameters=[{
                 'use_sim_time': True,
                 'yaml_filename': keepout_mask_file,  # define this path like your other files
+                'topic_name': '/keepout_filter_mask',  # added this
+                'frame_id': 'map', #added this
             }],
         ),
         Node(
@@ -90,6 +69,25 @@ def generate_launch_description():
                 'autostart': True,
                 'node_names': ['keepout_filter_mask_server', 'keepout_costmap_filter_info_server'],
             }],
+        ),
+        
+        
+
+        IncludeLaunchDescription(
+            PythonLaunchDescriptionSource(nav2_launch),
+            launch_arguments={
+                'map_yaml_file': map_file,
+                'params_file': param_file,
+                'use_sim': 'true',
+                'start_rviz': 'true',
+            }.items()
+        ),
+        # This starts the /move_action server your Python script is looking for
+        IncludeLaunchDescription(
+            PythonLaunchDescriptionSource(moveit_launch_path),
+            launch_arguments={
+                'use_sim_time': 'true',
+            }.items()
         ),
         
     ])
