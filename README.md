@@ -6,7 +6,13 @@ First ros2, turtlebot_ws and gazebo needs to be installed. Installation guidie c
 Make sure the following is being sourced before starting. Copy them into the `~/.bashrc` file to be loaded on cmd start.
 
 `source /opt/ros/humble/setup.bash`  
-`source ~/turtlebot3_ws/install/setup.bash `  
+`source ~/turtlebot3_ws/install/setup.bash`
+`if [ -f "install/setup.bash" ]; then`
+`    source install/setup.bash`
+`    echo "Sourced: $(pwd)/install/setup.bash"`
+`else`
+`    echo "NOTICE: No workspace found here. Please 'cd' into your workspace and run 'source install/setup.bash' or restart the terminal."`
+`fi`
 `export ROS_DOMAIN_ID=30 #TURTLEBOT3`  
 `export LDS_MODEL=LDS-02`  
 `export TURTLEBOT3_MODEL=waffle`  
@@ -19,7 +25,7 @@ To start turtlebot on rasberrypi run this:
 *this one doenst launch bringup with the manipulator  
 `ros2 launch turtlebot3_bringup robot.launch.py`
 
-To start the turblebot in gazebo the experiment 1 map only:  
+To start the turblebot in gazebo the experiment 2 map only:  
 `ros2 launch simulation_pkg custom_world.launch.py`
 
 To start turtlebot navigation with nav2 run:  

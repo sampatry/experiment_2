@@ -230,7 +230,11 @@ global_costmap:
       robot_radius: 0.10 # was 0.22
       resolution: 0.05
       track_unknown_space: true
-      plugins: ["static_layer", "obstacle_layer", "inflation_layer"]
+      plugins: ["static_layer", "obstacle_layer", "inflation_layer", "keepout_filter"]
+      keepout_filter:
+        plugin: "nav2_costmap_2d::KeepoutFilter"
+        enabled: True
+        filter_info_topic: "/costmap_filter_info"
       obstacle_layer:
         plugin: "nav2_costmap_2d::ObstacleLayer"
         enabled: True
@@ -342,3 +346,19 @@ velocity_smoother:
     odom_duration: 0.1
     deadband_velocity: [0.0, 0.0, 0.0]
     velocity_timeout: 1.0
+
+filter_mask_server:
+  ros__parameters:
+    use_sim_time: True
+    frame_id: "map"
+    topic_name: "/filter_mask"
+    yaml_filename: "" # We will pass this in the launch file
+
+costmap_filter_info_server:
+  ros__parameters:
+    use_sim_time: True
+    type: 0
+    filter_info_topic: "/costmap_filter_info"
+    mask_topic: "/filter_mask"
+    base: 0.0
+    multiplier: 1.0

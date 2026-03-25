@@ -5,10 +5,11 @@ from launch.actions import IncludeLaunchDescription
 from launch.launch_description_sources import PythonLaunchDescriptionSource
 from launch.substitutions import PathJoinSubstitution
 from launch_ros.substitutions import FindPackageShare
+from launch_ros.actions import Node
 
 def generate_launch_description():
     map_file = os.path.join(
-        get_package_share_directory('navigation_pkg'), 'config', 'my_map_V2.yaml'
+        get_package_share_directory('navigation_pkg'), 'config', 'my_map.yaml'
     )
 
     param_file = os.path.join(
@@ -25,10 +26,46 @@ def generate_launch_description():
         'launch', 'move_group.launch.py'
     )
 
+     # Path to your mask yaml (the black and white image description)
+    mask_yaml_file = os.path.join(
+        get_package_share_directory('navigation_pkg'), 'config', 'keepout_mask.yaml'
+    )
+
+    filter_mask_server = Node(
+        package='nav2_map_server',
+        executable='map_server',
+        name='filter_mask_server',
+        output='screen',
+        parameters=[param_file, {'yaml_filename': mask_yaml_file}]
+    )
+
+    costmap_filter_info_server = Node(
+        package='nav2_map_server',
+        executable='costmap_filter_info_server',
+        name='costmap_filter_info_server',
+        output='screen',
+        parameters=[param_file]
+    )
+
+    # 1. Define the Lifecycle Manager to "turn on" the filter nodes
+    lifecycle_manager_node = Node(
+        package='nav2_lifecycle_manager',
+        executable='lifecycle_manager',
+        name='lifecycle_manager_filter',
+        output='screen',
+        parameters=[{
+            'use_sim_time': True,
+            'autostart': True,
+            'node_names': ['filter_mask_server', 'costmap_filter_info_server']
+        }]
+    )
+
     return LaunchDescription([
-        # IncludeLaunchDescription(
-        #     PythonLaunchDescriptionSource(sim_launch)
-        # ),
+        # 2. Add the actual server nodes to the launch list
+        filter_mask_server,
+        costmap_filter_info_server,
+        lifecycle_manager_node,
+
         IncludeLaunchDescription(
             PythonLaunchDescriptionSource(nav2_launch),
             launch_arguments={
