@@ -15,7 +15,9 @@ Make sure the following is being sourced before starting. Copy them into the `~/
 `fi`
 `export ROS_DOMAIN_ID=30 #TURTLEBOT3`  
 `export LDS_MODEL=LDS-02`  
-`export TURTLEBOT3_MODEL=waffle`  
+`export TURTLEBOT3_MODEL=waffle`
+
+*Note: You must launch the terminals from the correct workspace, not launch and then navigate to the workspace or it will launch with cached information.
 
 To build;  
 `rm -rf build/ install/ log/ #(optional for clean build)`
