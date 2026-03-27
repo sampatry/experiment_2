@@ -20,12 +20,11 @@ def main() -> None:
 
     navigator = BasicNavigator()
 
-    # Inspection route, probably read in from a file for a real application
-    # from either a map or drive and repeat. (x, y, yaw)
+    # target position for turtlebot3
     inspection_route = [
         [3.0, 0.3],
         [3.0, 1.8],
-        [0.0, 1.8],
+        [0.0, 1.8], # final position
     ]
 
     # Set our demo's initial pose
